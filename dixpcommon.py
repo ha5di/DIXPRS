@@ -492,7 +492,7 @@ def raw2txt(raw):
     except IndexError:
         #print "&&& X"
         #hdump.hdump(raw)
-        pass
+        return ''
 
     return r1
     
