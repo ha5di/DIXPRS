@@ -158,14 +158,14 @@ def procmain(dev, (udptx, udpgw,udprx, udpcc), (kissport, speed, ctrl), ptt, deb
                             if soctx <> None:
                                 soctx.send(st)                                                          
                                  
-                        if soccc <> []:
-                            stcc = "DIXPRS2201|" + mycall + "|" + st[:2] + "|" + st[3:]
-                            
-                            for i in range(0, len(soccc)):
-                                try:
-                                    soccc[i].sendto(stcc, (udpcc[i][0], udpcc[i][1]))
-                                except (socket.error, socket.gaierror):
-                                    pass
+                            if soccc <> []:
+                                stcc = "DIXPRS2201|" + mycall + "|" + st[:2] + "|" + st[3:]
+                                
+                                for i in range(0, len(soccc)):
+                                    try:
+                                        soccc[i].sendto(stcc, (udpcc[i][0], udpcc[i][1]))
+                                    except (socket.error, socket.gaierror):
+                                        pass
                                     
                     # Control frame received
                     else:
