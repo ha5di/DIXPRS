@@ -1,0 +1,8 @@
+You are allowed to 
+
+- use DIXPRS free for HAM radio
+- redistribute DIXPRS for HAM radio purposes in original format (archive files available in download section)
+- modify it for yourself
+- redistribute modified version for HAM radio use as long as you keep original copyright text in files with the original licence conditions
+
+Commercial use or changing above rules is not allowed without prior written approval of author, HA5DI.

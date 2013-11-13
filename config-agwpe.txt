@@ -1,0 +1,223 @@
+#################################################################
+#                                                               #
+# Configuration file for DIXPRS 2.2 APRS digipeater and gateway #
+#                                                               #
+# Lines starting with # ; ' are comments and not processed      #
+#                                                               #
+# Empty lines allowed                                           #
+#                                                               #
+# Parameter names are case insensitive                          #
+#                                                               #
+# Default file name is config.txt please rename samples         #
+# or use -c <configfile> command line option                    #
+#                                                               #
+# Home page: https://sites.google.com/site/dixprs/              #
+#                                                               #
+# (C) Bela Markus, HA5DI - 2012                                 #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+# Sample configuration file for AGWPE/UZ7HO soundmodem, WINDOWS #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+# <y/n>    - use y or 1 to enable, n or 0 to diesable           #
+# <str>    - ASCII text, case sensitive                         #
+# <call>   - callsign with optional SSID, case insensitive      #
+# <fv>     - floating point value with decimal point            #
+# <n>      - integer number                                     #
+# <xy>     - two-letters string, case sensitive                 #
+# <host>   - domain name or IP address                          #
+# <adrlst> - comma separated list of host IP and port addresses #
+#            in ip:port format, e.g. 127.0.0.1:8889             #
+#                                                               #
+# Command names and y/n parameters are case insensitive         #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+# General station setting; mandatory section                    #
+#                                                               #
+#################################################################
+
+[GENERAL]
+
+# Mandatory parameters
+
+# Your callsign with SSID
+CALLSIGN=<call>
+
+# Degrees; West is negative, East is positive
+LONGITUDE=<fv>
+
+# Degrees; South is negative, North is posittive
+LATITUDE=<fv>
+
+# Optional parameters
+
+# Station height abvove the see level in meters; no default
+#ASL=<fv>
+
+# Owner name and contact; no default
+#OWNER=<str>
+
+# Spool directory to import packets; no default
+#SPOOL=<path>
+
+# Station symbol; default is S#
+#SYMBOL=<xy>
+
+# UDP port base number; default is 31110
+#UDPBASE=<n>
+
+# Beacon frequency in minutes; default is 30
+#BCNTIME=<n>
+
+# Beacon text; %v replaced with actual version string; default is %v
+# Used as default for ISGW and RADIO
+#BCNTXT=<str>
+
+# Select km/mi on monitor and in DX list; default is y (km)
+#METRIC=<y/n>
+
+# Max number of digis passed for local stations
+# Used as message gating condition for gating to Rf
+# Default value is 2
+#LOCALHOPS=<n>
+
+# Range in km within messages gated to Rf
+# If defined, checked after hop count (local) check
+# No default
+#MSGRANGE=<fv>
+
+#################################################################
+#                                                               #
+# IS gateway settings; remove this section to disable GW        #
+#                                                               #
+#################################################################
+
+[ISGW]
+
+# Mandatory parameters
+
+# Domain name of IS server to connect
+host=<host>
+
+# Optional parameters
+
+# Port number; default is 14580
+#PORT=<n>
+
+# Filter; default is r/@/150
+# @ is replaced with station position
+#FILTER=<str>
+
+#################################################################
+#                                                               #
+# WRB server settings; remove this section to disable it        #
+#                                                               #
+#################################################################
+
+[WEBSERVER]
+
+# Mandatory parameters
+
+# WEB server port, no default
+port=9999
+
+#################################################################
+#                                                               #
+# Radio port configuration settings; repeat section for         #
+# multiple ports                                                #
+#                                                               #
+#################################################################
+
+[RADIO]
+
+# Mandatory parameters
+
+# Interface type
+INTERFACE=AGWPE
+
+# AGWPE host name
+HOST=<host>
+
+# AGWPE port
+PORT=<n>
+
+# AGWPE channel
+CHANNEL=<n>
+
+# Optional parameters
+
+# Modem speed, default is 1200
+#SIGNALRATE=1200
+
+# Enable/disable NWS WX bulletin and object gating from IS to Rf
+# Disabled by default
+#GATENWS=<y/n>
+
+# Enable/disable BOM WX bulletin and object gating from IS to Rf
+# Disabled by default
+#GATEBOM=<y/n>
+
+# Descripton of port; no default
+#DESCRIPTION=<str>
+
+# Via used to send locally generated packets; default is WIDE1-1,WIDE2-2
+#AXVIA=<lst>
+
+# Digipeaters processed with WIDEn-n algorithm; default is WIDE1,WIDE2
+#WIDEN=<lst>
+
+# Blacklisted stations; they are not digipeated, not gated; default is NOCALL,N0CALL
+#BLACKLIST=<lst>
+
+# PHG string, do not mix with range; no default
+#PHG=<str>
+
+# Range value in miles, do not mix with PHG; no default
+#RNG=<n>
+
+# Enable/disable transmission; change it to PTTON=1 to enable trasmission; default is no
+#PTTON=<y/n>
+
+# Gate locally generated frames to IS gateway; default is no
+# Useful for rx-only radio ports
+# Experimental, use carefully
+#GATELOCAL=<y/n>
+
+# Gate digipeated frames to IS gateway; default is no
+# Experimental, use carefully
+#GATEDIGI=<y/n>
+
+# Beacon text; %v replaced with actual version string; default is %v
+#BCNTXT=<str>
+
+# Enable/disable digipeater; default is enabled
+#DIGIPEATER=<y/n>
+
+# Below these are the traffic shaping settings for gating messages
+# From IS to Rf
+#
+# For advanced users only; do not change if you do not know how
+# traffic shaping works and if you do not have good reason !!!
+ 
+# Traffic shaping high treshold, default is 0.75
+#TRAFFICHIGH=<fv>
+
+# Traffic shaping low treshold, default is 0.5
+#TRAFFIClow=<fv>
+
+# Traffic shaping transmission delay, default is 5.0 sec
+#TRAFFICDELAY=<fv>
+
+# Comma separated list of addresses to send receveid/transmitted frames
+# in hostip:port format. No default.
+#UDPCC=<adrlst>
+

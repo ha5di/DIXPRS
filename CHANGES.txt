@@ -1,0 +1,119 @@
+2.2.2 - September 3, 2012
+
+- Fixed filter sending to APRSC server
+
+- Added more validation to AX.25 raw frame header decoding
+
+- ?APRSD ?DX ?IGATE accept radio port number (0, 1, ...) as argument
+
+- Received and sent frames can copied in UDP packets to local or remote servers,
+  see UDPCC config parameter
+
+2.2.1 - August 21, 2012
+
+- Dropped SQLINRAM config option due to database reorganization and improved 
+  performance
+  
+- Fixed WEB interface position sign bug with Western and Southern coordinates
+
+- ?PORTS returns WEB server port number  
+
+- Telemetry shows WEB server, NWS and BOM gating enable/disable status
+
+- Added traffic shaping settings to config.txt
+
+2.2.0 - August 17, 2012
+
+- Restructured SQLite databases for performance and to support new features
+- Added @ macro to filter defintion, replaced with station position
+- Default filter changed to r/@/150
+- ?APRSD ?DX and ?IGATE commands accept port number (0, 1, ...)
+- ?INFO command response optimized
+- Added WEB server to check system status
+- Added signal rate specification to radio port, required by traffic shaping
+
+  SIGNALRATE=<fv> (RADIOPORT) - signal rate, default is 1200
+  
+- Gating weather bulletins (NWS and BOM messages and objects) from IS to Rf
+  can be enabled on port basis separately
+  
+  GATENWS=<y/n> (RADIOPORT) - enable/disable NWS messages (US)
+  GATEBOM=<y/n> (RADIOPORT) - enable/disable BOM messages (Australia)
+  
+- Adaptive traffic shaping feature added to protect Rf channel against getting
+  overloaded by gated messages 
+
+2.1.5 - July 29, 2012
+
+- Fixed NMEA sentence decoding bug
+- Added configuration options to config.txt:
+
+  LOCALHOPS=<n> (GENERAL) - max number of digis passed for local stations
+  MSGRANGE=<n>  (GENERAL) - max distance in km to gate messages to Rf
+
+- Added processing of SIGTERM signal for compatibility to daemonization tools
+ 
+2.1.4 - July 23, 2012
+
+- Delivery of status messages improved
+- Added DIR_CNT and RF_CNT to ?IGATE response and capability packets
+- Fixed posit gating from IS to Rf when messages were gated previously
+- IS to Rf gating condition changed back from distance to hop count (max. 2 by default)
+- Monitor shows hop count for received frames
+- Monitor now indicates category of sent frames (DIGI, LOCL or GATE)
+- 'PHASE nn' debug messages turned off in igate process, related tos erver conenction status
+- Added new status messages to IS server connection process
+- Fixed showing stations with -9999km (invalid/unknown) distance in DX lists
+- Fixed crashing on query processing when IGATE closed
+
+2.1.3 - July 16, 2012
+
+- Fixed decoding bug of Southern/Western coordinates in standard APRS format
+- Fixed server name decoding bug connecting to javAPRSSsrvr 4.0
+- Fixed IS server connection loss in WINDOWS EXE version
+- Added ?IGATE? query
+- Added periodic sending of capabilities packet to IS server
+- Improved processing of javAAPRSsrvr status messages
+- Improve status messages to reflect real status
+- Added IS server connection task relaunch counter to ?PORTS status message
+
+- Added configuration options to config.txt:
+
+  METRIC=<y/n> (GENERAL)    - select km/mi display on console and DX list; default is km
+  BCNTXT=<str> (ISGW/RADIO) - specify beacon text; %v replaced with actual version string; default is version string
+  DIGIPEATER=<y/n> (RADIO)  - Enable/disable digipeater; default is enabled
+  GATELOCAL=<y/n> (RADIO)   - Enable/disable gating of locally generated frames to IS server; default is disabled
+  GATEDIGI=<y/n> (RADIO)    - Enable/disable gating of digipeated frames to IS server; default is disabled
+
+2.1.2 - July 9, 2012
+
+- Fixed issue connecting to javAPRSsrvr 4.0.0
+
+2.1.1 - June 28, 2012
+
+- Removal of trailing spaces at the end of frames fixed
+
+2.1 - June 15, 2012
+
+- ?PORTS command returns more information
+- Better IS gateway incoming traffic processing on heavy load
+- Added more check for received raw frame validity
+
+2.1rc4 - June 12, 2012
+
+- Fixed AGWPE driver bug which slowed down message handling
+
+2.1rc3 - June 11, 2012
+
+- Fixed third-party packet unwrap bug on radio port
+- Added config option to have SQL database in RAM to improve performance for embedded systems
+- Added config option to gate locally generated packets to IS
+- Added config option to gate digipeated packlets to IS
+- Changed local display of sent packets to distinct digipeated and local packets
+
+2.1rc2 - June 8, 2012
+
+- First public release
+
+
+
