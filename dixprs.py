@@ -3,7 +3,7 @@
 ####################################################
 # APRS digipeater and gateway for amateur radio use
 #
-# (C) HA5DI - 2012-2014
+# (C) HA5DI - 2012
 #
 # http://sites.google.com/site/dixprs/
 ####################################################
@@ -1091,15 +1091,15 @@ if __name__ == '__main__':
                     else:         
                         #---------------------------------------
                         # Process frames from input queue
-                        #---------------------------------------                                                                    
-                        
+                        #---------------------------------------
+
                         igtfrm = dixlibax25.txt2vir(igttxt)
-                
+
                         if len(igtfrm) == 4 and len(igtfrm[3]) > 1: 
                             if dixlibaprs.IsPosition(igtfrm):
                                 pass
                                 #print "POSITION:", igtfrm
-    
+
                             #---------------------------------------
                             # Add sender to net connected list
                             #---------------------------------------
@@ -1111,14 +1111,14 @@ if __name__ == '__main__':
                             # Send positions if sender was gated 
                             #---------------------------------------
 
-                            if dixlibsql.IsGatedFrom(igtfrm[0]): 
+                            if dixlibsql.IsGatedFrom(igtfrm[0], 1): 
 
                                 if dixlibaprs.IsPosition(igtfrm):
                                     nrport = dixlibsql.GetGatedPort(igtfrm[0])
-                                    
+
                                     if nrport >= 0:
                                         radioports[nrport].sendgate('}' + igttxt)
-                               
+
                             #-----------------------------------------------
                             # Process messages received via Internet Gateway
                             #-----------------------------------------------
@@ -1127,7 +1127,7 @@ if __name__ == '__main__':
                                 destcal = dixlibmsg.GetDestcall(igtfrm[3])
                                 destpos = dixlibsql.getdbpos(destcal)
                                 dixlibmsg.msgproc((-1, igtfrm))
-                                
+
                                 #print "MSG IN GW:", -1, igtfrm
 
                             #---------------------------------------

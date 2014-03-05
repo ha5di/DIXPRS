@@ -3,12 +3,12 @@
 ####################################################
 # APRS digipeater and gateway for amateur radio use
 #
-# (C) HA5DI - 2012
+# (C) HA5DI - 2012-2014
 #
 # http://sites.google.com/site/dixprs/
 ####################################################
 
-import	time
+import  time
 import  binascii
 import  sys
 import  os
@@ -25,38 +25,44 @@ def finish():
 
         curopt.close()
         conopt.close()
-        
+
         curtmp.close()
         contmp.close()
 
         return
 
-    
-def IsGatedFrom(stn):
-    cmd = "SELECT * FROM gatedlist WHERE tm>%f AND stn='%s'" % (time.time() - 3600.0, stn)
+
+def IsGatedFrom(stn, mode):
+    tim = time.time()
+    cmd = "SELECT * FROM gatedlist WHERE tm>%f AND stn='%s' AND posgated=0" % (tim - 3600.0, stn)
 
     curtmp.execute(cmd)
     res = curtmp.fetchall()
-    
+
     if len(res) > 0:
+        if mode != 0:
+            cmd = "UPDATE gatedlist SET posgated=1 WHERE tm>%f AND stn='%s' AND posgated=0" % (tim - 3600.0, stn)
+            curtmp.execute(cmd)
+            contmp.commit()
+
         return True
-    
-    return False       
-        
+
+    return False
+
 
 def GetGatedPort(stn):
     cmd = "SELECT * FROM gatedlist WHERE tm>%f AND stn='%s'" % (time.time() - 3600.0, stn)
 
     curtmp.execute(cmd)
     res = curtmp.fetchone()
-    
+
     if len(res) > 0:
         return res[2]
-    
-    return -1       
-        
+
+    return -1
+
 #---------------------------    
-            
+
 def AddRfHeard(stn, port, hops):
     cmd = "SELECT * FROM heardrf WHERE stn=\'%s\' AND port=%d AND hops=%d" % (stn, port, hops)
 
@@ -64,7 +70,7 @@ def AddRfHeard(stn, port, hops):
         curtmp.execute(cmd)
     except Error, e:
         print "00000", cmd
-    
+
     res = curtmp.fetchone()
 
     if res == None:
@@ -76,17 +82,17 @@ def AddRfHeard(stn, port, hops):
             print "11111", cmd
     else:
         cmd = "UPDATE heardrf SET tm=%f WHERE stn=\'%s\' AND port=%d AND hops=%d" % (time.time(), stn, port, hops)
-    
+
         try:
             curtmp.execute(cmd)
             contmp.commit()
         except Error, e:
             print "22222", cmd
 
-    ############################x 
-    
+    ############################
+
     tmh = int(time.time() / 3600.0)
-    
+
     cmd = "SELECT nr FROM aprsh WHERE stn='%s' AND port=%d AND tmh=%d" % (stn, port, tmh)
     curdat.execute(cmd)
     res = curdat.fetchone()
@@ -95,57 +101,57 @@ def AddRfHeard(stn, port, hops):
         cmd = "INSERT INTO aprsh VALUES('%s', %d, %d, 1)" % (stn, tmh, port)
     else:
         cmd = "UPDATE aprsh SET nr=%d WHERE stn='%s' AND port=%d AND tmh=%d" % (res[0] + 1, stn, port, tmh)
-    
-    curdat.execute(cmd)        
+
+    curdat.execute(cmd)
     condat.commit()
-    
+
     return
-    
+
 
 def AddRfHeardList(stn, port, hops, pos, dist, hdr, dti, inf):    
     cmd = "INSERT INTO heardlist VALUES ('%s', %f, %d, %d,%f, %f, %f, '%s', %d, '%s')" % \
         (stn, time.time(), port, hops, pos[0], pos[1], dist, hdr, dti, inf)
     curtmp.execute(cmd)
     contmp.commit()
-    
+
     # Add to DX lists if heard direct
     if hops == 0 and dist >= 0:
         cmd = "SELECT * FROM dxlst24h WHERE port=%d AND stn='%s'" % (port, stn)
-        curdat.execute(cmd)        
+        curdat.execute(cmd)
         res = curdat.fetchone()
 
-        if res == None:        
+        if res == None:
             cmd = "INSERT INTO dxlst24h VALUES ('%s', %f, %d, %f, %f, %f)" % (stn, time.time(), port, pos[0], pos[1], dist)
             curdat.execute(cmd)
             condat.commit()
         else:
             if dist >= res[5]:
                 cmd = "UPDATE dxlst24h SET dist=%f,tm=%f WHERE stn='%s' AND port=%d" % (dist, time.time(), stn, port)
-                curdat.execute(cmd)                                         
+                curdat.execute(cmd)
                 condat.commit()
 
         cmd = "SELECT * FROM dxlsttot WHERE port=%d AND stn='%s'" % (port, stn)
-        curdat.execute(cmd)        
+        curdat.execute(cmd)
         res = curdat.fetchone()
 
-        if res == None:        
+        if res == None:
             cmd = "INSERT INTO dxlsttot VALUES ('%s', %f, %d, %f, %f, %f)" % (stn, time.time(), port, pos[0], pos[1], dist)
             curdat.execute(cmd)
             condat.commit()
         else:
             if dist >= res[5]:
                 cmd = "UPDATE dxlsttot SET dist=%f,tm=%f WHERE stn='%s' AND port=%d" % (dist, time.time(), stn, port)
-                curdat.execute(cmd)                                         
+                curdat.execute(cmd)
                 condat.commit()
-    return    
-    
- 
+    return
+
+
 def GetRfHeard(port, maxhops):
     if port < 0:
         cmd = "SELECT stn, tm, min(hops) FROM heardrf WHERE tm>%f AND hops<=%d GROUP BY stn ORDER BY stn" % (time.time() - 3600.0, maxhops)
-    else:        
+    else:
         cmd = "SELECT stn, tm, min(hops) FROM heardrf WHERE tm>%f AND port=%d AND hops<=%d GROUP BY stn ORDER BY stn" % (time.time() - 3600.0, port, maxhops)
-       
+
     curtmp.execute(cmd)
     res = curtmp.fetchall()
     
@@ -158,7 +164,7 @@ def GetRfCntAll(port):
 def GetRfCntLoc(port):
     res = GetRfHeard(port, cvars.get('genCFGlocalhops'))
     return len(res)
-        
+
 def GetRfCntDir(port):
     res = GetRfHeard(port, 0)
     return len(res)
@@ -169,12 +175,12 @@ def IsLocal(stn, maxhops):
 
     curtmp.execute(cmd)
     res = curtmp.fetchall()
-    
+
     if len(res) > 0:
         return True
-    
+
     return False       
-    
+
 
 # Return port number if heard or -1 if not heard
     
@@ -270,7 +276,7 @@ def addsentlist(port, dest):
 
 def airgatedaddrecord(port, msg):    
     try:    
-        cmd = "INSERT INTO gatedlist VALUES ('%s', %f, %d, '%s')" % (msg.split('>')[0], time.time(), port, msg.split(':')[2].strip())
+        cmd = "INSERT INTO gatedlist VALUES ('%s', %f, %d, '%s', 0)" % (msg.split('>')[0], time.time(), port, msg.split(':')[2].strip())
         curtmp.execute(cmd)
         contmp.commit()
     except:
@@ -536,7 +542,7 @@ def msgack(ackk):
     msgactivate(ackk[0])
 
     return
-        
+
 
 def msgactivate(stn):
     curtmp.execute("SELECT * FROM msgout WHERE stn=\'%s\' AND status=1" % (stn))
@@ -627,7 +633,6 @@ def start():
     curopt = conopt.cursor()
     curtmp = contmp.cursor()
 
-    
     #################################
 
     try:
@@ -684,15 +689,15 @@ def start():
     try:
         curtmp.execute('SELECT * FROM gatedlist')
     except:
-        curtmp.execute('''CREATE TABLE gatedlist (stn text, tm real, port integer, dst text)''')
-        contmp.commit()        
+        curtmp.execute('''CREATE TABLE gatedlist (stn text, tm real, port integer, dst text, posgated integer)''')
+        contmp.commit()
 
     try:
         curtmp.execute('SELECT * FROM sentlist')
     except:
         curtmp.execute('''CREATE TABLE sentlist (tm real, port integer, dest integer)''')
         contmp.commit()        
-        
+
     try:
         curtmp.execute('SELECT * FROM msgout')
     except:
@@ -700,23 +705,22 @@ def start():
         contmp.commit()        
 
     #####################
-    
-    
+
     try:
         curopt.execute('SELECT * FROM options')
     except:
         curopt.execute('''CREATE TABLE options (par text, val text)''')
         conopt.commit()    
-    
+
     ##################################
-        
+
     curopt.execute("SELECT val FROM options WHERE par='ackcnt'")
     res = curopt.fetchone()
-    
+
     if res == None:
         curopt.execute("INSERT INTO options VALUES ('ackcnt', '0')")
         conopt.commit()
-    
+
 condat = None
 conopt = None
 contmp = None
@@ -724,5 +728,3 @@ contmp = None
 curdat = None
 curopt = None
 curtmp = None
-
-        
