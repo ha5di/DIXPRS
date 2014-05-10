@@ -9,7 +9,7 @@
 ####################################################
 
 def readcfg(fname):
-    
+
     try:
         fp = open(fname)
 
@@ -21,15 +21,15 @@ def readcfg(fname):
 
     while True:
         s = fp.readline()
-        
+
         if len(s) == 0:
             break
-        
+
         s = s.strip()
 
         if len(s) == 0:
             continue
-        
+
         ch = s[0]
 
         if ch == ';' or ch == '#' or ch == "'":
@@ -50,7 +50,7 @@ def readcfg(fname):
             p2 = s[k + 1:].strip()
 
             lst[n][1][p1.upper()] =  p2
-            
+
     fp.close()
 
     return lst
@@ -60,7 +60,7 @@ def getcfgsection(cfg, section):
     s = section.upper()
 
     ret = []
-    
+
     for p in cfg:
         if p[0] == s:
             ret.append(p[1])
@@ -75,21 +75,19 @@ def yesno(par):
         return True
 
     return False
-    
+
 
 def hostadr(s):
     w = s.split(':')
-    
+
     if len(w) <> 2:
         return ()
-        
+
     host = w[0]
-    
+
     try:
-        port = int(w[1])             
+        port = int(w[1])
     except ValueError:
         return ()
-        
-    return (host, port)        
-    
-    
+
+    return (host, port)
