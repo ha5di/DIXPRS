@@ -3,7 +3,7 @@
 ####################################################
 # APRS digipeater and gateway for amateur radio use
 #
-# (C) HA5DI - 2012
+# (C) HA5DI - 2012-2014
 #
 # http://sites.google.com/site/dixprs/
 ####################################################
@@ -36,7 +36,7 @@ import  dixpwebserver
 
 from dixlibcommon import *
 from dixpcommon import radioports
-           
+
 ###############################################################################	
 # Functions definitions
 ###############################################################################	
@@ -1362,51 +1362,53 @@ if __name__ == '__main__':
                     if p.drvpr <> None:
                         if p.drvpr.is_alive() == False:
                             pass
-                            
+
             # 15 minutes tick
             elif tm > tmcnt15min:
-                tmcnt15min += 900.0           
-                
-                dixlibsql.DbTmpPurge()
+                tmcnt15min += 900.0
 
+                dixlibsql.DbTmpPurge()
 
                 # Send telemetry to ISGW if enabled
                 if pigate <> None:
-                    tlmw = dixlibsql.GetTlmData(0)
-                    tlms = 'T#%03d,%d,%d,%d,%d,%d,' % (cnttm, tlmw[0], tlmw[1], tlmw[2], tlmw[3], tlmw[4])
-                    tlmu = ':%-9s:UNIT.pkt/15m,pkt/15m,stn/15m,stn/15m,pkt/15m' % (cvars.get('genCFGcall'))
+                    for port in range(0, len(radioports)):
+                        tlmw = dixlibsql.GetTlmData(port)
+                        tlms = 'T#%03d,%d,%d,%d,%d,%d,' % (cnttm, tlmw[0], tlmw[1], tlmw[2], tlmw[3], tlmw[4])
+                        tlmu = ':%-9s:UNIT.pkt/15m,pkt/15m,stn/15m,stn/15m,pkt/15m' % (cvars.get('genCFGcall'))
 
-                    if cvars.get('webCFGport') == None:
-                        tlms += '0'
-                        tlmu += ',off'
-                    else:
-                        tlms += '1'
-                        tlmu += ',on'
+                        if cvars.get('webCFGport') == None:
+                            tlms += '0'
+                            tlmu += ',off'
+                        else:
+                            tlms += '1'
+                            tlmu += ',on'
 
-                    if radioports[0].gtnws:
-                        tlms += '1'
-                        tlmu += ',on'
-                    else:
-                        tlms += '0'
-                        tlmu += ',off'
-                        
-                    if radioports[0].gtbom:
-                        tlms += '1'
-                        tlmu += ',on'
-                    else:
-                        tlms += '0'
-                        tlmu += ',off'
-                        
-                    tlms += '00000'                                                
-                                                
-                    igtport.sendmy(tlms)
-                    cnttm = (cnttm + 1) % 1000                                     
+                        if radioports[0].gtnws:
+                            tlms += '1'
+                            tlmu += ',on'
+                        else:
+                            tlms += '0'
+                            tlmu += ',off'
+
+                        if radioports[0].gtbom:
+                            tlms += '1'
+                            tlmu += ',on'
+                        else:
+                            tlms += '0'
+                            tlmu += ',off'
+
+                        tlms += '00000'
+
+                        igtport.sendmy(tlms)
+
+                    cnttm = (cnttm + 1) % 1000
 
                     # Send telemetry definitions in every 60 minutes
                     if divtm1 > 3:
-                        igtport.sendmy(':%-9s:PARM.RxTot,RxDir,RxTot,RxDir,TxTot,WEB,NWS,BOM' % (cvars.get('genCFGcall')))
-                        igtport.sendmy(':%-9s:EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0' % (cvars.get('genCFGcall')))
-                        igtport.sendmy(tlmu)
+                        for port in range(0, len(radioports)):
+                            igtport.sendmy(':%-9s:PARM.RxTot,RxDir,RxTot,RxDir,TxTot,WEB,NWS,BOM' % (cvars.get('genCFGcall')))
+                            igtport.sendmy(':%-9s:EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0' % (cvars.get('genCFGcall')))
+                            igtport.sendmy(tlmu)
 
                         divtm1 = 0
 
@@ -1416,20 +1418,19 @@ if __name__ == '__main__':
             elif tm > tmcnt1hr:
                 tmcnt1hr += 3600.0
 
-                dixlibsql.DbDatPurge()                
-                    
+                dixlibsql.DbDatPurge()
+
             # 1 day tick
             elif tm > tmcnt1day:
                 tmcnt1day += 86400.0
-                
-                
+
+
             # Subprocess health check
-            
             if pigate <> None:
-            
+
                 if not pigate.is_alive():
                     pigate.terminate()
-                    
+
                     pigate = multiprocessing.Process(target=dixpigate.procmain, args=(cvars.get('genCFGudpbase'), \
                     cvars.get('igwCFGhost'), cvars.get('igwCFGport'), cvars.get('genCFGcall'), cvars.get('igwCFGfilter'), \
                     dixprscommon.version))    
@@ -1437,14 +1438,14 @@ if __name__ == '__main__':
                     cvars.put('igwSTATrescnt', cvars.get('igwSTATrescnt') + 1)
 
                     dixlibaprs.StatusUpdate("Pigate process restarted")
-                    dixlibaprs.StatusSend()                    
-                    
+                    dixlibaprs.StatusSend()
+
                     print "*** Restarted PIGATE process"
-                                                   
+
         except KeyboardInterrupt:
             OsSignal = -1
 
-            
+
     #######################################################
     # Main program loop terminated
     #######################################################
@@ -1452,13 +1453,13 @@ if __name__ == '__main__':
     if OsSignal < 0:
         s = "Ctrl/C"
     else:
-        s = "Signal %d" % (OsSignal)         
+        s = "Signal %d" % (OsSignal)
 
     print
     print
     print "%s received, shutting down" % (s)
     print
-    
+
     dixlibaprs.StatusUpdate('Shutting down')
     dixlibaprs.StatusSend()
 
@@ -1472,7 +1473,7 @@ if __name__ == '__main__':
     for p in radioports:
         p.stop()
         print "AIR%s  process stopped [%s]" % (p.prtid, p.pdesc)
-        
+
     # Close sql database
     dixlibsql.finish()
 
@@ -1484,7 +1485,7 @@ if __name__ == '__main__':
             time.sleep(0.01)
 
         print 'IGATE process stopped'
-        
+
     # Close WEB Server if enabled
 
     if pwebsr <> None:
@@ -1493,7 +1494,6 @@ if __name__ == '__main__':
             time.sleep(0.01)
 
         print 'WEBSR process stopped'
-        
+
     print
     print
-    	
