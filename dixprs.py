@@ -1372,6 +1372,8 @@ if __name__ == '__main__':
                 # Send telemetry to ISGW if enabled
                 if pigate <> None:
                     for port in range(0, len(radioports)):
+                        hdr = radioports[port].axcal + '>' + dixprscommon.dststrn
+
                         tlmw = dixlibsql.GetTlmData(port)
                         tlms = 'T#%03d,%d,%d,%d,%d,%d,' % (cnttm, tlmw[0], tlmw[1], tlmw[2], tlmw[3], tlmw[4])
                         tlmu = ':%-9s:UNIT.pkt/15m,pkt/15m,stn/15m,stn/15m,pkt/15m' % (cvars.get('genCFGcall'))
@@ -1399,20 +1401,20 @@ if __name__ == '__main__':
 
                         tlms += '00000'
 
-                        igtport.sendmy(tlms)
+                        igtport.send(tlms)
 
-                    cnttm = (cnttm + 1) % 1000
 
-                    # Send telemetry definitions in every 60 minutes
+                        # Send telemetry definitions in every 60 minutes
+                        if divtm1 > 3:
+                            igtport.send(hdr + ':%-9s:PARM.RxTot,RxDir,RxTot,RxDir,TxTot,WEB,NWS,BOM' % (radioports[port].axcal))
+                            igtport.send(hdr + ':%-9s:EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0' % (radioports[port].axcal))
+                            igtport.send(hdr + tlmu)
+
                     if divtm1 > 3:
-                        for port in range(0, len(radioports)):
-                            igtport.sendmy(':%-9s:PARM.RxTot,RxDir,RxTot,RxDir,TxTot,WEB,NWS,BOM' % (cvars.get('genCFGcall')))
-                            igtport.sendmy(':%-9s:EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0' % (cvars.get('genCFGcall')))
-                            igtport.sendmy(tlmu)
-
                         divtm1 = 0
 
                     divtm1 += 1
+                    cnttm = (cnttm + 1) % 1000cnttm = (cnttm + 1) % 1000
 
             # 1 hour tick
             elif tm > tmcnt1hr:
