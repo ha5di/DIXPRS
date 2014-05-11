@@ -1385,14 +1385,14 @@ if __name__ == '__main__':
                             tlms += '1'
                             tlmu += ',on'
 
-                        if radioports[0].gtnws:
+                        if radioports[port].gtnws:
                             tlms += '1'
                             tlmu += ',on'
                         else:
                             tlms += '0'
                             tlmu += ',off'
 
-                        if radioports[0].gtbom:
+                        if radioports[port].gtbom:
                             tlms += '1'
                             tlmu += ',on'
                         else:
