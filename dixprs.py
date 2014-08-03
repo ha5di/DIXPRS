@@ -1255,9 +1255,14 @@ if __name__ == '__main__':
         
                         elif p[-3:].upper() == 'MYP':
                             fn = genCFGspol + '/' + p
-                            fp = open(fn)
-                            w = fp.readlines()
-                            fp.close()
+                            
+                            try:
+                                fp = open(fn)
+                                w = fp.readlines()
+                                fp.close()
+                            except IOError:
+                                continue
+                                
                             os.remove(fn)
         
                             if len(w) >= 2:
