@@ -1231,8 +1231,7 @@ if __name__ == '__main__':
                     for p in lst:
                         if  p[-3:].upper() == 'PKT':
                             fn = genCFGspol + '/' + p
-                            time.sleep(0.01)
-                     
+
                             try:
                                 fp = open(fn)
                                 w = fp.readlines()
@@ -1259,7 +1258,6 @@ if __name__ == '__main__':
                             fp = open(fn)
                             w = fp.readlines()
                             fp.close()
-                            time.sleep(0.01)
                             os.remove(fn)
         
                             if len(w) >= 2:
