@@ -19,6 +19,7 @@ import  getopt
 import  signal 
 import  socket
 import  binascii
+import  os.path
 
 import  dixpcommon
 import  dixpigate
@@ -1231,52 +1232,66 @@ if __name__ == '__main__':
                     for p in lst:
                         if  p[-3:].upper() == 'PKT':
                             fn = genCFGspol + '/' + p
-
+                            
+                            # Check last modification time, wait 5s
                             try:
-                                fp = open(fn)
-                                w = fp.readlines()
-                                fp.close()
-                            except IOError:
-                                continue
-                                
-                            os.remove(fn)
-        
-                            if len(w) >= 2:
-                                if len(w[1]) > 10:
+                                if tm - os.path.getmtime(fn) < 5.0:
+                                    continue        
+
+                                try:
+                                    fp = open(fn)
+                                    w = fp.readlines()
+                                    fp.close()
+                                except IOError:
+                                    continue
                                     
-                                    # Send it to GW?
-                                    if w[0].find('G') >= 0 or w[0].find('*') >= 0:
-                                        if igtport <> None:
-                                            igtport.send(w[1].strip())
+                                os.remove(fn)
+            
+                                if len(w) >= 2:
+                                    if len(w[1]) > 10:
                                         
-                                    for k in range(0,len(radioports)):
-                                        if w[0].find(radioports[k].prtid) >= 0 or w[0].find('*') >= 0:
-                                            radioports[k].send(w[1].strip())
-        
+                                        # Send it to GW?
+                                        if w[0].find('G') >= 0 or w[0].find('*') >= 0:
+                                            if igtport <> None:
+                                                igtport.send(w[1].strip())
+                                            
+                                        for k in range(0,len(radioports)):
+                                            if w[0].find(radioports[k].prtid) >= 0 or w[0].find('*') >= 0:
+                                                radioports[k].send(w[1].strip())
+                            except os.error:
+                                continue
+                            
                         elif p[-3:].upper() == 'MYP':
                             fn = genCFGspol + '/' + p
-                            
+    
+                            # Check last modification time, wait 5s
                             try:
-                                fp = open(fn)
-                                w = fp.readlines()
-                                fp.close()
-                            except IOError:
-                                continue
-                                
-                            os.remove(fn)
-        
-                            if len(w) >= 2:
-                                if len(w[1]) > 10:
+                                if tm - os.path.getmtime(fn) < 5.0:
+                                    continue        
+                        
+                                try:
+                                    fp = open(fn)
+                                    w = fp.readlines()
+                                    fp.close()
+                                except IOError:
+                                    continue
                                     
-                                    # Send it to GW?
-                                    if w[0].find('G') >= 0 or  w[0].find('*') >= 0:
-                                        if igtport <> None:
-                                            igtport.sendmy(w[1].strip())
-                                    
-                                    for k in range(0,len(radioports)):
-                                        if w[0].find(radioports[k].prtid) >= 0 or w[0].find('*') >= 0:
-                                            radioports[k].sendmy(w[1].strip())
+                                os.remove(fn)
+            
+                                if len(w) >= 2:
+                                    if len(w[1]) > 10:
                                         
+                                        # Send it to GW?
+                                        if w[0].find('G') >= 0 or  w[0].find('*') >= 0:
+                                            if igtport <> None:
+                                                igtport.sendmy(w[1].strip())
+                                        
+                                        for k in range(0,len(radioports)):
+                                            if w[0].find(radioports[k].prtid) >= 0 or w[0].find('*') >= 0:
+                                                radioports[k].sendmy(w[1].strip())
+
+                            except os.error:
+                                continue
           
                 except OSError:
                     pass
