@@ -98,10 +98,8 @@ class IGATECON:
             try:
                 r = self.sockt.recv(1000)
 
-                # Check for error
+                # Check for empty line
                 if len(r) == 0:
-                    self.phase = 10
-                    print "PHASE ERROR 1"
                     return
                 
                 
