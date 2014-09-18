@@ -8,7 +8,11 @@
 # http://sites.google.com/site/dixprs/
 ####################################################
 
-import serial
+try:
+    import serial
+except ImportError:
+    print "\nWarning: pyserial module is not installed\n"
+    
 import dixpcommon
 import dixdrvudp
 import socket
