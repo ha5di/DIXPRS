@@ -1432,7 +1432,7 @@ if __name__ == '__main__':
                         divtm1 = 0
 
                     divtm1 += 1
-                    cnttm = (cnttm + 1) % 1000cnttm = (cnttm + 1) % 1000
+                    cnttm = (cnttm + 1) % 1000
 
             # 1 hour tick
             elif tm > tmcnt1hr:
