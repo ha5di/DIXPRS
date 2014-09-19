@@ -1390,8 +1390,6 @@ if __name__ == '__main__':
                 # Send telemetry to ISGW if enabled
                 if pigate <> None:
                     for port in range(0, len(radioports)):
-                        hdr = radioports[port].axcal + '>' + dixprscommon.dststrn
-
                         tlmw = dixlibsql.GetTlmData(port)
                         tlms = 'T#%03d,%d,%d,%d,%d,%d,' % (cnttm, tlmw[0], tlmw[1], tlmw[2], tlmw[3], tlmw[4])
                         tlmu = ':%-9s:UNIT.pkt/15m,pkt/15m,stn/15m,stn/15m,pkt/15m' % (cvars.get('genCFGcall'))
@@ -1419,14 +1417,14 @@ if __name__ == '__main__':
 
                         tlms += '00000'
 
-                        igtport.send(tlms)
+                        igtport.sendmy(tlms)
 
 
                         # Send telemetry definitions in every 60 minutes
                         if divtm1 > 3:
-                            igtport.send(hdr + ':%-9s:PARM.RxTot,RxDir,RxTot,RxDir,TxTot,WEB,NWS,BOM' % (radioports[port].axcal))
-                            igtport.send(hdr + ':%-9s:EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0' % (radioports[port].axcal))
-                            igtport.send(hdr + tlmu)
+                            igtport.sendmy(':%-9s:PARM.RxTot,RxDir,RxTot,RxDir,TxTot,WEB,NWS,BOM' % (radioports[port].axcal))
+                            igtport.sendmy(':%-9s:EQNS.0,1,0,0,1,0,0,1,0,0,1,0,0,1,0' % (radioports[port].axcal))
+                            igtport.sendmy(tlmu)
 
                     if divtm1 > 3:
                         divtm1 = 0
