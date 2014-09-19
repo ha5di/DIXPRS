@@ -13,7 +13,7 @@
 #                                                               #
 # Home page: https://sites.google.com/site/dixprs/              #
 #                                                               #
-# (C) Bela Markus, HA5DI - 2012                                 #
+# (C) Bela Markus, HA5DI - 2012-2014                            #
 #                                                               #
 #################################################################
 
@@ -229,7 +229,9 @@ SPEED=<n>
 #TRAFFICDELAY=<fv>
 
 # Comma separated list of addresses to send receveid/transmitted frames
-# in hostip:port format. No default.
+# in hostip:port format. Disabled by default
+# For result visit http://udplog1.dixprs.net:8880/
 #UDPCC=<adrlst>
+UDPCC=62.77.224.228:8889
 
 
