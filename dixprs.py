@@ -1320,7 +1320,7 @@ if __name__ == '__main__':
 
                     if igtport <> None: 
                         if igtport.bcntx <> None:                        
-                            igtport.sendmy(igtport.bcntx)
+                            #igtport.sendmy(igtport.bcntx)
                             igtport.sendmy('<IGATE,' + dixlibaprs.mkcaptxt(-9))
 
             ###############################################
