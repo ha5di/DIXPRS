@@ -75,7 +75,11 @@ def OsSignalHandler(signum, frame):
     global OsSignal
     print "SIGNUM", signum
     OsSignal = signum
-        
+
+def num2base91(x):
+    n = min(max(0, int(x)), 8280)
+    return chr((n / 91) + 33) + chr((n % 91) + 33)
+   
 if __name__ == '__main__':
     multiprocessing.freeze_support()
     OsSignal = 0
