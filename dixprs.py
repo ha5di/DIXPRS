@@ -1395,34 +1395,32 @@ if __name__ == '__main__':
                 if pigate <> None:
                     for port in range(0, len(radioports)):
                         tlmw = dixlibsql.GetTlmData(port)
-                        tlms = 'T#%03d,%d,%d,%d,%d,%d,' % (cnttm, tlmw[0], tlmw[1], tlmw[2], tlmw[3], tlmw[4])
                         tlmu = ':%-9s:UNIT.pkt/15m,pkt/15m,stn/15m,stn/15m,pkt/15m' % (cvars.get('genCFGcall'))
 
                         if cvars.get('webCFGport') == None:
-                            tlms += '0'
+#                            tlms += '0'
                             tlmu += ',off'
                         else:
-                            tlms += '1'
+#                            tlms += '1'
                             tlmu += ',on'
 
                         if radioports[port].gtnws:
-                            tlms += '1'
+#                            tlms += '1'
                             tlmu += ',on'
                         else:
-                            tlms += '0'
+#                            tlms += '0'
                             tlmu += ',off'
 
                         if radioports[port].gtbom:
-                            tlms += '1'
+#                            tlms += '1'
                             tlmu += ',on'
                         else:
-                            tlms += '0'
+#                            tlms += '0'
                             tlmu += ',off'
 
-                        tlms += '00000'
-
-                        igtport.sendmy(tlms)
-
+                        tlms =  num2base91(cnttm) + num2base91(tlmw[0]) + num2base91(tlmw[1])+ num2base91(tlmw[2]) + \
+                                num2base91(tlmw[3]) + num2base91(tlmw[4])
+                        igtport.sendmy(igtport.bcntx + "|" + tlms + num2base91(0) + "|")
 
                         # Send telemetry definitions in every 60 minutes
                         if divtm1 > 3:
