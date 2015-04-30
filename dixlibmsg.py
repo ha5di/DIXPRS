@@ -3,7 +3,7 @@
 ####################################################
 # APRS digipeater and gateway for amateur radio use
 #
-# (C) HA5DI - 2012
+# (C) HA5DI - 2012-2015
 #
 # http://sites.google.com/site/dixprs/
 ####################################################
@@ -11,6 +11,9 @@
 import  Queue
 import  time
 import  platform
+import  os
+import  os.path
+
 import  dixlibsql
 import  dixlibax25
 import  dixlibgeo
@@ -21,7 +24,9 @@ from dixlibcommon import *
 from dixpcommon import radioports
 
 dupls = {}
-          
+dirsep = os.sep
+homedir = os.path.expanduser("~") + dirsep + "DIXPRS"
+
 def SendMy2Autoport(stn, s):
     igw = cvars.get('igtport')
 
@@ -464,6 +469,18 @@ def msgproc(ax):
                         if prtnr <> None:
                             answ = dixlibaprs.mkcaptxt(prtnr)
                     
+                    elif cmd == '?EXT':
+                        answ = "Saved"
+                        tmstr = time.strftime("%Y%m%d%H%M%S", time.gmtime())
+                        fn = homedir + dirsep + "cmds" + dirsep + tmstr + ".cmd"
+
+                        try:
+                            fp = open(fn, "wt")
+                            fp.write(tmstr + " " + msgfrom + " " + msgbody)
+                            fp.close()
+                        except IOError:
+                            pass                            
+        
                     else:
                         answ = "Query error #1"                            
 
@@ -592,7 +609,7 @@ def CmdNorm(cmd):
     s = cmd.upper()
 
     cmdlst = ['DATE', 'DX', 'HELP', 'INFO', 'OWNER', 'PORTS', 'TIME', 'TYPE', 'UPTIME', 'VERSION']
-    cmdlst += ['APRSD', 'APRSH', 'APRSM', 'APRSO', 'APRSP', 'APRSS', 'APRST', 'PING?', 'IGATE?']
+    cmdlst += ['APRSD', 'APRSH', 'APRSM', 'APRSO', 'APRSP', 'APRSS', 'APRST', 'PING?', 'IGATE?', 'EXT']
 
     n = 0
     w = ''

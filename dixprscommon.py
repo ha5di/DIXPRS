@@ -8,8 +8,8 @@
 # http://sites.google.com/site/dixprs/
 ####################################################
 
-version = 'DIXPRS 2.4.0-beta1'
-versdat = '10-May-2014'
+version = 'DIXPRS 2.4.0-beta2'
+versdat = '30-Apr-2015'
 dststrn = 'APDI24'
 udpbase = 31110
 
