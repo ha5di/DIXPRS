@@ -4,6 +4,7 @@
 # APRS digipeater and gateway for amateur radio use
 #
 # (C) HA5DI - 2012-2015
+#
 # http://sites.google.com/site/dixprs/
 ####################################################
 
