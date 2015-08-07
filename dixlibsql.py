@@ -115,7 +115,7 @@ def AddRfHeardList(stn, port, hops, pos, dist, hdr, dti, inf):
     contmp.commit()
 
     # Add to DX lists if heard direct
-    if hops == 0 and dist >= 0:
+    if hops == 0 and dist >= 0 and dist < 3000:
         cmd = "SELECT * FROM dxlst24h WHERE port=%d AND stn='%s'" % (port, stn)
         curdat.execute(cmd)
         res = curdat.fetchone()
