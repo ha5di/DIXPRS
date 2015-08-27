@@ -213,7 +213,7 @@ def getdbposfull(stn):
 
     try:
         curdat.execute(cmd)
-    except (valueError, Error):
+    except (ValueError, Error):
         return ()
     
     res = curdat.fetchone()
