@@ -398,7 +398,11 @@ def GetDxListTot(n, port):
     else:
         cmd = "SELECT stn,tm,port,dist FROM dxlsttot WHERE port=%d ORDER BY dist DESC LIMIT %d" % (port, n)
 
-    curdat.execute(cmd)   
+    try:
+        curdat.execute(cmd)   
+    except:
+        return []
+        
     res = curdat.fetchall()     
     
     return res
@@ -406,7 +410,12 @@ def GetDxListTot(n, port):
 
 def IsConnectedToNet(call):
     cmd = "SELECT tm FROM netlist WHERE tm>%f AND stn='%s' LIMIT 1" % (time.time() - 3600, call)
-    curtmp.execute(cmd)
+    
+    try:
+        curtmp.execute(cmd)
+    except:
+        return 0
+        
     res = curtmp.fetchone()
 
     if res == None:
