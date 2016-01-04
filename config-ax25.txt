@@ -227,6 +227,7 @@ DEVICE=<str>
 
 # Comma separated list of addresses to send receveid/transmitted frames
 # in hostip:port format. Disabled by default
-# For result visit http://udplog1.dixprs.net:8880/
+# For result visit http://udplog1.xham.org:8880/
 #UDPCC=<adrlst>
-UDPCC=62.77.224.228:8889
+#UDPCC=udplog1.xham.org:8889
+
