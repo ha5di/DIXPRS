@@ -117,6 +117,10 @@ host=<host>
 # @ is replaced with station position
 #FILTER=<str>
 
+# Whether to send telemetry every 15 minutes to the ISGW
+# Enabled by default
+#SENDTELEMETRY=<y/n>
+
 #################################################################
 #                                                               #
 # WRB server settings; remove this section to disable it        #
