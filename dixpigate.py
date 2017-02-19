@@ -82,7 +82,7 @@ class IGATECON:
     def send(self, s):
         if self.phase == 9:         
             try:
-                self.sockt.send(s + '\r')
+                self.sockt.send(s + '\r\n')
             except socket.error, s:
                 self.phase = 10
                 print "PHASE ERROR 2"
