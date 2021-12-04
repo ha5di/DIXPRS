@@ -306,6 +306,12 @@ if __name__ == '__main__':
             cvars.put('igwCFGbtxt', p)
         except KeyError:
             cvars.put('igwCFGbtxt', genCFGbcntxt)
+
+        try:
+            p = sect['SENDTELEMETRY']
+            cvars.put('igwCFGsendtelem', dixprscfg.yesno(p))
+        except KeyError:
+            cvars.put('igwCFGsendtelem', True)
             
     #------------------------------------------------   
     # WEB server configuration settings
@@ -1392,7 +1398,7 @@ if __name__ == '__main__':
                 dixlibsql.DbTmpPurge()
 
                 # Send telemetry to ISGW if enabled
-                if pigate <> None:
+                if pigate <> None and cvars.get('igwCFGsendtelem'):
                     for port in range(0, len(radioports)):
                         tlmw = dixlibsql.GetTlmData(port)
                         tlmu = ':%-9s:UNIT.pkt/15m,pkt/15m,stn/15m,stn/15m,pkt/15m' % (cvars.get('genCFGcall'))
