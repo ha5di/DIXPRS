@@ -1,0 +1,11 @@
+[Unit]
+Description=DIXPRS APRS Digipeater and Igate
+After=network.target
+
+[Service]
+EnvironmentFile=/etc/default/dixprs
+ExecStart=%%BINDIR%%/dixprs -c ${CONFDIR}/dixprs.conf
+
+[Install]
+WantedBy=default.target
+
