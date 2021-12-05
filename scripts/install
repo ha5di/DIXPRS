@@ -1,0 +1,70 @@
+#!/bin/bash
+
+LIBDIR="/usr/local/lib/"
+BINDIR="/usr/local/bin/"
+CONFDIR="/usr/local/etc/"
+PYAX25REPO="https://github.com/F4FXL/pyax25"
+
+#No user servicable parts below....
+
+if [ "$EUID" -ne 0 ]
+  then echo "Please run as root"
+  exit 1
+fi
+
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+#Get prerequisites
+apt -y install python-dev libax25-dev ax25-tools ax25-apps
+
+#get pyax25
+git clone $PYAX25REPO /tmp/pyax25/
+cd /tmp/pyax25/
+./compile_ax25.py build
+./compile_ax25.py install
+rm -rf /tmp/pyax25/
+
+#copy python files
+cd $SCRIPT_DIR
+mkdir -p "$LIBDIR/dixprs"
+cp ../*.py "$LIBDIR/dixprs"
+cp ../LICENCE.txt "$LIBDIR/dixprs"
+cp ../README.txt "$LIBDIR/dixprs"
+
+#create symbolic link in bin
+rm "$BINDIR/dixprs"
+ln -s "$LIBDIR/dixprs/dixprs.py" "$BINDIR/dixprs"
+
+#create config if it does not exist
+if test -f "$CONFDIR/dixprs.conf"
+then
+    echo "Configuration $CONFDIR/dixprs.conf exists, skipping"
+else
+    while [ -z $TEMPLATECONF ] && [ "$TEMPLATECONF" != 'agwpe' ] && [ "$TEMPLATECONF" != 'ax25' ] && [ "$TEMPLATECONF" != 'kiss' ]
+    do
+        echo " "
+        echo " "
+        read -p "Which template config would you like to start with? (agwpe/ax25/kiss)" TEMPLATECONF
+        echo $TEMPLATECONF
+        case $TEMPLATECONF in
+            agwpe)
+            cp ../config-agwpe.txt "$CONFDIR/dixprs.conf"
+            ;;
+            ax25)
+            cp ../config-ax25.txt "$CONFDIR/dixprs.conf"
+            ;;
+            kiss)
+            cp ../config-kiss.txt "$CONFDIR/dixprs.conf"
+            ;;
+            *)
+            ;;
+        esac
+    done
+fi
+
+#install systemd stuff
+cp dixprs.service /lib/systemd/system/
+sed -i "s|%%BINDIR%%|$BINDIR|g" /lib/systemd/system/dixprs.service
+sed -i "s|%%CONFDIR%%|$CONFDIR|g" /lib/systemd/system/dixprs.service
+systemctl daemon-reload
+systemctl enable dixprs.service
