@@ -63,8 +63,8 @@ else
 fi
 
 #install systemd stuff
-echo "CONFDIR=$CONFDIR" >> /etc/default/dixprs
 cp dixprs.service /lib/systemd/system/
 sed -i "s|%%BINDIR%%|$BINDIR|g" /lib/systemd/system/dixprs.service
+sed -i "s|%%CONFDIR%%|$CONFDIR|g" /lib/systemd/system/dixprs.service
 systemctl daemon-reload
 systemctl enable dixprs.service
